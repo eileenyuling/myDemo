@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MVVM</title>
+</head>
+<body>
+
+<div id="mvvm-app">
+    <input type="text" v-model="someStr">
+    <!-- <input type="text" v-model="child.someStr"> -->
+    <!-- <p v-class="className" class="abc">
+        {{someStr}}
+        <span v-text="child.someStr"></span>
+    </p> -->
+    <p>{{ someStr }}</p>
+    <!-- <p v-html="htmlStr"></p> -->
+    <!-- <button v-on:click="clickBtn">change model</button> -->
+</div>
+<script src="./observer.js"></script>
+<script src="./watcher.js"></script>
+<script src="./compiler.js"></script>
+<script src="./MVVM.js"></script>
+<script>
+  new MVVM({
+    el: '#mvvm-app',
+    data: {
+      value: 20,
+      someStr: '2'
+    }
+  })
+  // observe(vm.data)
+  // new Compiler(vm.el, vm.data)
+</script>
+</body>
+</html>
