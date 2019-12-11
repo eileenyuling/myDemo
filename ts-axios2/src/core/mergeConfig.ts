@@ -27,7 +27,7 @@ export default function mergeConfig(config1: AxiosRequestConfig, config2?: Axios
     const strat = strats[key] || defaultStrat
     config[key] = strat(config1[key], config2![key])
   }
-  config.headers = flattenHeaders(config.headers, config.method)
+  // config.headers = flattenHeaders(config.headers, config.method)
   return config
 }
 function deepMergeStrat(val1: any, val2: any): any {
@@ -68,7 +68,7 @@ function defaultStrat(val1: any, val2: any): any {
   return typeof val2 !== 'undefined' ? val2 : val1
 }
 
-function flattenHeaders(headers: any, method: Method): any {
+export function flattenHeaders(headers: any, method: Method): any {
   if (!headers) {
     return headers
   }

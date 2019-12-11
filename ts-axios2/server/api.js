@@ -43,7 +43,8 @@ router.get('/error/timeout', function(req, res) {
 router.post('/extend/post', function(req, res) {
   setTimeout(() => {
     res.json({
-      msg: `hello world`
+      msg: `hello world`,
+      b: 222
     })
   }, 3000)
 })

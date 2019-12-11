@@ -2,6 +2,7 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from "../types";
 import { parseHeaders } from "../helpers/headers";
 import { transformResponse } from "../helpers/data";
 import { createError } from "../helpers/error";
+import transform from './transform'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -39,11 +40,11 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       if (request.status === 0) {
         return
       }
-      const responseHeaders = request.getAllResponseHeaders()
+      const responseHeaders = parseHeaders(request.getAllResponseHeaders())
       const responseData = responseType && responseType !== 'text' ? request.response : request.responseText
       const response: AxiosResponse = {
-        data: transformResponse(responseData),
-        headers: parseHeaders(responseHeaders),
+        data: transform(responseData, responseHeaders, config.transformResponse),
+        headers: responseHeaders,
         status: request.status,
         statusText: request.statusText,
         config,
@@ -58,7 +59,6 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     function handleResponse(response: AxiosResponse) {
       if (response.status >= 200 && response.status < 300) {
-        console.log('response', response)
         resolve(response)
       } else {
         reject(createError(`Request failed width status code ${response.status}`, config, null, request, response))

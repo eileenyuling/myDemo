@@ -1,47 +1,65 @@
 import axios from '../../src/index'
 import qs from 'qs'
-axios.defaults.headers.common['test2'] = 123
-
-axios.interceptors.request.use(config => {
-  config.headers.test += '1'
-  return config
-})
-axios.interceptors.request.use(config => {
-  config.headers.test += '2'
-  return config
-})
-axios.interceptors.request.use(config => {
-  config.headers.test += '3'
-  return config
-})
-
-axios.interceptors.response.use(res => {
-  res.data += '1'
-  return res
-})
-let interceptor = axios.interceptors.response.use(res => {
-  res.data += '2'
-  return res
-})
-axios.interceptors.response.use(res => {
-  res.data += '3'
-  return res
-})
-
-axios.interceptors.response.eject(interceptor)
-
 axios({
+  transformRequest: [(function(data) {
+    return qs.stringify(data)
+  }), ...(axios.defaults.transformRequest as AxiosTransformer[])],
+  transformResponse: [...(axios.defaults.transformResponse as AxiosTransformer[]), function(data) {
+    if (typeof data === 'object') {
+      data.b = 2
+    }
+    return data
+  }],
   url: '/api/extend/post',
   method: 'post',
-  data: qs.stringify({
+  data: {
     a: 1
-  }),
-  headers: {
-    test: '321'
   }
 }).then((res) => {
   console.log(res.data)
 })
+// axios.defaults.headers.common['test2'] = 123
+
+// axios.interceptors.request.use(config => {
+//   config.headers.test += '1'
+//   return config
+// })
+// axios.interceptors.request.use(config => {
+//   config.headers.test += '2'
+//   return config
+// })
+// axios.interceptors.request.use(config => {
+//   config.headers.test += '3'
+//   return config
+// })
+
+// axios.interceptors.response.use(res => {
+//   res.data += '1'
+//   return res
+// })
+// let interceptor = axios.interceptors.response.use(res => {
+//   res.data += '2'
+//   return res
+// })
+// axios.interceptors.response.use(res => {
+//   res.data += '3'
+//   return res
+// })
+
+// axios.interceptors.response.eject(interceptor)
+
+// axios({
+//   url: '/api/extend/post',
+//   method: 'post',
+//   data: qs.stringify({
+//     a: 1
+//   }),
+//   headers: {
+//     test: '321'
+//   }
+// }).then((res) => {
+//   console.log(res.data)
+// })
 // interface ResponseData<T = any> {
 //   result: T,
 //   code: string,

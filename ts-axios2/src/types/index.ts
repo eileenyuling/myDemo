@@ -99,5 +99,6 @@ export {
   AxiosInterceptorManager,
   ResolveFn,
   RejectedFn,
-  Interceptors
+  Interceptors,
+  AxiosTransformer
 }
