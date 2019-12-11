@@ -88,6 +88,10 @@ interface Interceptors {
   response: InterceptorManager<AxiosResponse>
 }
 
+interface AxiosStatic extends AxiosInstance {
+  create(config?: AxiosRequestConfig): AxiosInstance
+}
+
 export {
   Method,
   AxiosRequestConfig,
@@ -100,5 +104,6 @@ export {
   ResolveFn,
   RejectedFn,
   Interceptors,
-  AxiosTransformer
+  AxiosTransformer,
+  AxiosStatic
 }

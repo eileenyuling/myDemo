@@ -18,6 +18,28 @@ axios({
 }).then((res) => {
   console.log(res.data)
 })
+const instance = axios.create({
+  transformRequest: [(function(data) {
+    return qs.stringify(data)
+  }), ...(axios.defaults.transformRequest as AxiosTransformer[])],
+  transformResponse: [...(axios.defaults.transformResponse as AxiosTransformer[]), function(data) {
+    if (typeof data === 'object') {
+      data.b = 2
+    }
+    return data
+  }]
+})
+instance.defaults.headers.common['test2'] = 'test2'
+
+instance({
+  url: '/api/extend/post',
+  method: 'post',
+  data: {
+    a: 8
+  }
+}).then((res) => {
+  console.log(res.data)
+})
 // axios.defaults.headers.common['test2'] = 123
 
 // axios.interceptors.request.use(config => {
