@@ -22,6 +22,7 @@ interface AxiosRequestConfig {
   timeout?: number,
   transformRequest?: AxiosTransformer | AxiosTransformer[],
   transformResponse?: AxiosTransformer | AxiosTransformer[],
+  cancelToken?: CancelToken,
   [propName: string]: any
 }
 
@@ -90,6 +91,40 @@ interface Interceptors {
 
 interface AxiosStatic extends AxiosInstance {
   create(config?: AxiosRequestConfig): AxiosInstance
+  CancelToken: CancelTokenStatic
+  isCancel: (val: any) => boolean
+}
+
+interface CancelToken {
+  promise: Promise<Cancel>
+  reason?: Cancel
+  throwIfRequested(): void
+}
+
+interface Cancel {
+  message?: string
+}
+
+// interface CancelStatic {
+//   new(message?: string): Cancel
+// }
+
+interface Canceler {
+  (message?: string): void
+}
+
+interface CancelExecutor {
+  (cancel: Canceler): void
+}
+
+interface CancelTokenStatic {
+  new(executor: CancelExecutor): CancelToken
+  source(): CancelTokenSource
+}
+
+interface CancelTokenSource {
+  token: CancelToken,
+  cancel: Canceler
 }
 
 export {
@@ -105,5 +140,10 @@ export {
   RejectedFn,
   Interceptors,
   AxiosTransformer,
-  AxiosStatic
+  AxiosStatic,
+  CancelToken,
+  Canceler,
+  CancelExecutor,
+  CancelTokenStatic,
+  CancelTokenSource
 }

@@ -1,45 +1,38 @@
-import axios from '../../src/index'
-import qs from 'qs'
-axios({
-  transformRequest: [(function(data) {
-    return qs.stringify(data)
-  }), ...(axios.defaults.transformRequest as AxiosTransformer[])],
-  transformResponse: [...(axios.defaults.transformResponse as AxiosTransformer[]), function(data) {
-    if (typeof data === 'object') {
-      data.b = 2
-    }
-    return data
-  }],
-  url: '/api/extend/post',
-  method: 'post',
-  data: {
-    a: 1
-  }
-}).then((res) => {
-  console.log(res.data)
-})
-const instance = axios.create({
-  transformRequest: [(function(data) {
-    return qs.stringify(data)
-  }), ...(axios.defaults.transformRequest as AxiosTransformer[])],
-  transformResponse: [...(axios.defaults.transformResponse as AxiosTransformer[]), function(data) {
-    if (typeof data === 'object') {
-      data.b = 2
-    }
-    return data
-  }]
-})
-instance.defaults.headers.common['test2'] = 'test2'
+import axios, { Canceler } from '../../src/index'
 
-instance({
-  url: '/api/extend/post',
-  method: 'post',
-  data: {
-    a: 8
+const CancelToken = axios.CancelToken
+const source = CancelToken.source()
+
+axios.get('/api/extend/get', {
+  cancelToken: source.token
+}).catch(function(e) {
+  if (axios.isCancel(e)) {
+    console.log('Request canceled', e.message)
   }
-}).then((res) => {
-  console.log(res.data)
 })
+
+setTimeout(() => {
+  source.cancel('Operation canceled by the user.')
+
+  axios.post('/api/extend/post', { a: 1 }, { cancelToken: source.token }).catch(function(e) {
+    if (axios.isCancel(e)) {
+      console.log(e.message)
+    }
+  })
+}, 100)
+let cancel: Canceler
+
+axios.get('/api/extend/get', {
+  cancelToken: new CancelToken(c => {
+    cancel = c
+  })
+}).catch(function(e) {
+  console.log('Request canceled')
+})
+
+setTimeout(() => {
+  cancel()
+}, 200)
 // axios.defaults.headers.common['test2'] = 123
 
 // axios.interceptors.request.use(config => {

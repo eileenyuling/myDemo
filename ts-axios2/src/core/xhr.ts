@@ -13,7 +13,8 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       data = null,
       headers,
       responseType,
-      timeout
+      timeout,
+      cancelToken
     } = config
     const request = new XMLHttpRequest()
     if (responseType) {
@@ -54,6 +55,13 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     }
     request.ontimeout = function handleTimeout() {
       reject(createError(`Timeout of ${timeout}ms exceeded`, config, 'ECONNABORTED', request))
+    }
+
+    if (cancelToken) {
+      cancelToken.promise.then(reason => {
+        request.abort()
+        reject(reason)
+      })
     }
     request.send(data)
 
