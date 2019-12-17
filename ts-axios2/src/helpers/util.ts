@@ -20,8 +20,13 @@ function extend<T, U>(to: T, from: U): T & U {
   return to as T & U
 }
 
+function isFormData(val: any): boolean {
+  return typeof val !== 'undefined' && val instanceof FormData
+}
+
 export {
   isDate,
   isPlainObject,
-  extend
+  extend,
+  isFormData
 }

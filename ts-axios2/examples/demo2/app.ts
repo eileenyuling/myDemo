@@ -1,38 +1,65 @@
 import axios, { Canceler } from '../../src/index'
-
-const CancelToken = axios.CancelToken
-const source = CancelToken.source()
-
-axios.get('/api/extend/get', {
-  cancelToken: source.token
-}).catch(function(e) {
-  if (axios.isCancel(e)) {
-    console.log('Request canceled', e.message)
+const instance = axios.create()
+const url = 'http://p1.meituan.net/dpmerchantimage/32874e71-23df-4bd9-84a3-4530eb582848.jpg%40740w_2048h_0e_1l%7Cwatermark%3D1%26%26r%3D1%26p%3D9%26x%3D2%26y%3D2%26relative%3D1%26o%3D20'
+const downloadEl = document.getElementById('download')
+downloadEl.addEventListener('click', e => {
+  instance.get(url, {
+    onDownloadProgress: (e) => {
+      console.log('onDownloadProgress', e)
+    }
+  })
+})
+const uploadEl = document.getElementById('upload')
+uploadEl.addEventListener('click', (e) => {
+  const data = new FormData()
+  const fileEl = document.getElementById('file') as HTMLInputElement
+  if (fileEl.files) {
+    console.log(fileEl.files)
+    data.append('file', fileEl.files[0])
+    instance.post('/api/upload', data, {
+      onUploadProgress: (e) => {
+        console.log('onUploadProgress', e)
+      }
+    }).then(res => {
+      console.log(res)
+    })
   }
 })
 
-setTimeout(() => {
-  source.cancel('Operation canceled by the user.')
+// const CancelToken = axios.CancelToken
+// const source = CancelToken.source()
 
-  axios.post('/api/extend/post', { a: 1 }, { cancelToken: source.token }).catch(function(e) {
-    if (axios.isCancel(e)) {
-      console.log(e.message)
-    }
-  })
-}, 100)
-let cancel: Canceler
+// axios.get('http://localhost:8088/api/extend/get', {
+//   cancelToken: source.token,
+//   withCredentials: true
+// }).catch(function(e) {
+//   if (axios.isCancel(e)) {
+//     console.log('Request canceled', e.message)
+//   }
+// })
 
-axios.get('/api/extend/get', {
-  cancelToken: new CancelToken(c => {
-    cancel = c
-  })
-}).catch(function(e) {
-  console.log('Request canceled')
-})
+// setTimeout(() => {
+//   // source.cancel('Operation canceled by the user.')
 
-setTimeout(() => {
-  cancel()
-}, 200)
+//   axios.post('/api/extend/post', { a: 1 }, { cancelToken: source.token }).catch(function(e) {
+//     if (axios.isCancel(e)) {
+//       console.log(e.message)
+//     }
+//   })
+// }, 100)
+// let cancel: Canceler
+
+// axios.get('/api/extend/get', {
+//   cancelToken: new CancelToken(c => {
+//     cancel = c
+//   })
+// }).catch(function(e) {
+//   console.log('Request canceled')
+// })
+
+// setTimeout(() => {
+//   cancel()
+// }, 200)
 // axios.defaults.headers.common['test2'] = 123
 
 // axios.interceptors.request.use(config => {

@@ -48,6 +48,30 @@ function buildUrl(url: string, params?: any) {
   url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams
   return url
 }
+
+interface URLOrigin {
+  protocol: string,
+  host: string
+}
+
+const urlParsingNode = document.createElement('a')
+const currentOrigin = resolveURL(window.location.href)
+
+function resolveURL(url: string): URLOrigin {
+  urlParsingNode.setAttribute('href', url)
+  const { protocol, host } = urlParsingNode
+  return {
+    protocol,
+    host
+  }
+}
+
+function isURLSameOrigin(requestURL: string): boolean {
+  const parsedOrigin = resolveURL(requestURL)
+  return currentOrigin.protocol === parsedOrigin.protocol && currentOrigin.host === parsedOrigin.host
+
+}
 export {
-  buildUrl
+  buildUrl,
+  isURLSameOrigin
 }

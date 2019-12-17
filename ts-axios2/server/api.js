@@ -1,11 +1,21 @@
 const express = require('express')
 const router = express.Router()
+var multipart = require('connect-multiparty');
+const path = require('path')
+var multipartMiddleware = multipart({
+  uploadDir: path.resolve(__dirname, '../upload-file')
+});
 router.get('/demo1/get', (req, res) => {
   res.json({a: 1})
 })
 
 router.post('/base/post', function(req, res) {
   res.json(req.body)
+})
+
+router.post('/upload', multipartMiddleware,  (req, res) => {
+  console.log(req.body, req.files)
+  res.send('upload success')
 })
 
 router.post('/base/buffer', function(req, res) {

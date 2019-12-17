@@ -8,6 +8,7 @@ import { flattenHeaders } from "./mergeConfig";
 export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   throwIfCancellationRequested(config)
   processConfig(config)
+  console.log('config', config)
   return xhr(config)
 }
 

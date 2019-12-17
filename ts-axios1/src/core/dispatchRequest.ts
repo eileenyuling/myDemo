@@ -5,6 +5,7 @@ import transform from './transform'
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   throwIfCancellationRequested(config)
   processConfig(config)
+  console.log('config', config)
   return xhr(config).then(res => {
     return transformResponseData(res)
   })
